@@ -2,6 +2,7 @@ const express = require("express");
 const connectDatabase = require("./src/config/db");
 const { apiRouter } = require("./src/routes");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 const port = process.env.PORT;
@@ -17,6 +18,8 @@ app.use(
 );
 
 connectDatabase();
+
+app.use(cookieParser());
 
 app.get("/", (req, res) => {
   res.send("Api Working");
