@@ -95,7 +95,26 @@ const userLogin = async (req, res) => {
   }
 };
 
+const userLogout = async (req, res, next) => {
+  try {
+    // res.clearCookie("token");
+    res.clearCookie("token", {
+      path: "/", 
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+    });
+    
+    return res.json({ message: "User Logout success" });
+  } catch (error) {
+    return res
+      .status(error.statusCode || 500)
+      .json({ message: error.message || "Internal server error" });
+  }
+};
+
 module.exports = {
   userSignup,
   userLogin,
+  userLogout,
 };
