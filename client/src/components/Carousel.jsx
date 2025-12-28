@@ -32,7 +32,7 @@ const Carousel = () => {
       <img
         src={images[current]}
         alt="Banner"
-        className="w-full h-[220px] md:h-[300px] lg:h-[400px] object-cover"
+        className="w-full h-[220px] md:h-[300px] lg:h-[350px] object-cover"
       />
 
       {/* Left Arrow */}
