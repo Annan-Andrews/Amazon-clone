@@ -3,6 +3,11 @@
 @theme {
     --color-amazon-blue: #131921;
     --color-amazon-dark: #232f3e;
+    --color-amazon-scroll-to-top: #37475A;
     --color-amazon-yellow: #febd69;
   
 }
+
+html {
+    scroll-behavior: smooth;
+  }
