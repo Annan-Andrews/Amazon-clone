@@ -99,13 +99,27 @@ const userLogout = async (req, res, next) => {
   try {
     // res.clearCookie("token");
     res.clearCookie("token", {
-      path: "/", 
+      path: "/",
       sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
       secure: process.env.NODE_ENV === "production",
       httpOnly: true,
     });
-    
+
     return res.json({ message: "User Logout success" });
+  } catch (error) {
+    return res
+      .status(error.statusCode || 500)
+      .json({ message: error.message || "Internal server error" });
+  }
+};
+
+const checkUser = async (req, res, next) => {
+  try {
+    return res.json({
+      message: "User authorized",
+      data: req.userData,
+      success: true,
+    });
   } catch (error) {
     return res
       .status(error.statusCode || 500)
@@ -117,4 +131,5 @@ module.exports = {
   userSignup,
   userLogin,
   userLogout,
+  checkUser,
 };

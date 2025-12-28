@@ -1,6 +1,7 @@
 var jwt = require('jsonwebtoken');
+const User = require('../models/userModel');
 
-const userAuth = (req, res, next) => {
+const userAuth = async (req, res, next) => {
     try {
         const { token } = req.cookies;
 
@@ -8,13 +9,15 @@ const userAuth = (req, res, next) => {
             return res.status(401).json({ message: "user not autherised", success: false });
         }
 
-        const tokenVerified = jwt.verify(token, process.env.JWT_SECRET);
+        const tokenVerified = await jwt.verify(token, process.env.JWT_SECRET);
         
         if (!tokenVerified) {
             return res.status(401).json({ message: "user not autherised", success: false });
         }
 
         req.user = tokenVerified;
+
+        req.userData = await User.findById(tokenVerified.id);
 
         next();
     } catch (error) {
