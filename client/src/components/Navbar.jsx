@@ -1,9 +1,36 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { MapPin, Search, ChevronDown, ShoppingCart, Menu } from "lucide-react";
 import { Link } from "react-router-dom";
-import AmazonLogo from "../assets/AmazonLogo.png"
+import AmazonLogo from "../assets/AmazonLogo.png";
+import { useCart } from "../context/CartContext";
+import { useSelector } from "react-redux";
+import useLogout from "../hooks/useLogout";
 
-export const Navbar = ({ cartCount = 0 }) => {
+export const Navbar = () => {
+  const { getTotalItems } = useCart();
+  const cartCount = getTotalItems();
+  const { isUserAuth, userData } = useSelector((state) => state.user);
+  const [showAccountDropdown, setShowAccountDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+  const logout = useLogout();
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowAccountDropdown(false);
+      }
+    };
+
+    if (showAccountDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showAccountDropdown]);
+
   return (
     <nav className="bg-amazon-blue text-white sticky top-0 z-50">
       {/* Top bar */}
@@ -59,22 +86,206 @@ export const Navbar = ({ cartCount = 0 }) => {
             <ChevronDown size={14} className="ml-1" />
           </div>
 
-          <div className="hidden md:block cursor-pointer hover:border hover:border-white px-2 py-1 rounded transition-colors">
-            <div className="flex flex-col text-xs leading-tight">
-              <span className="text-gray-300">Hello, sign in</span>
-              <span className="font-bold">Account & Lists</span>
+          {/* Account & Lists Dropdown */}
+          <div
+            className="hidden md:block relative"
+            ref={dropdownRef}
+            onMouseEnter={() => setShowAccountDropdown(true)}
+            onMouseLeave={() => setShowAccountDropdown(false)}
+          >
+            <div className="cursor-pointer hover:border hover:border-white px-2 py-1 rounded transition-colors">
+              {!isUserAuth ? (
+                <Link to="/login">
+                  <div className="flex items-center">
+                    <div className="flex flex-col text-xs leading-tight">
+                      <span className="text-gray-300">Hello, sign in</span>
+                      <span className="font-bold">Account & Lists</span>
+                    </div>
+                    <ChevronDown size={16} className="ml-1" />
+                  </div>
+                </Link>
+              ) : (
+                <div className="flex items-center">
+                  <div className="flex flex-col text-xs leading-tight">
+                    <span className="text-gray-300 font-semibold">
+                      Hello, {userData?.name || "User"}
+                    </span>
+                    <span className="font-bold">Account & Lists</span>
+                  </div>
+                  <ChevronDown size={16} className="ml-1" />
+                </div>
+              )}
             </div>
+
+            {/* Dropdown Menu */}
+            {showAccountDropdown && (
+              <div className="absolute right-0 top-full mt-1 w-96 bg-white text-gray-900 shadow-2xl border border-gray-200 rounded-sm">
+                {/* Arrow pointing up */}
+                <div className="absolute -top-2 right-2 w-4 h-4 bg-white border-l border-t border-gray-200 transform rotate-45"></div>
+
+                {/* Dropdown Content */}
+                <div className="p-4">
+                  {/* Sign In Section (Only for non-authenticated) */}
+                  {!isUserAuth && (
+                    <>
+                      <Link to="/login">
+                        <button className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-2 px-4 rounded-md transition-colors mb-3">
+                          Sign in
+                        </button>
+                      </Link>
+                      <div className="text-sm text-center mb-4">
+                        New customer?{" "}
+                        <Link
+                          to="/signup"
+                          className="text-blue-600 hover:text-blue-800 hover:underline"
+                        >
+                          Start here.
+                        </Link>
+                      </div>
+                      <div className="border-t border-gray-200 mb-4"></div>
+                    </>
+                  )}
+
+                  {/* Two Column Layout */}
+                  <div className="grid grid-cols-2 gap-8">
+                    {/* Left Column - Your Lists */}
+                    <div>
+                      <h3 className="font-bold text-sm mb-2">Your Lists</h3>
+                      <ul className="space-y-1 text-sm">
+                        <li>
+                          <Link
+                            to="/wishlist"
+                            className="text-gray-700 hover:text-orange-600 hover:underline"
+                          >
+                            Create a Wish List
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/wishlist"
+                            className="text-gray-700 hover:text-orange-600 hover:underline"
+                          >
+                            Wish from Any Website
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/wishlist"
+                            className="text-gray-700 hover:text-orange-600 hover:underline"
+                          >
+                            Baby Wishlist
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/discover"
+                            className="text-gray-700 hover:text-orange-600 hover:underline"
+                          >
+                            Discover Your Style
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/showroom"
+                            className="text-gray-700 hover:text-orange-600 hover:underline"
+                          >
+                            Explore Showroom
+                          </Link>
+                        </li>
+                      </ul>
+                    </div>
+
+                    {/* Right Column - Your Account */}
+                    <div>
+                      <h3 className="font-bold text-sm mb-2">Your Account</h3>
+                      <ul className="space-y-1 text-sm">
+                        <li>
+                          <Link
+                            to="/profile"
+                            className="text-gray-700 hover:text-orange-600 hover:underline"
+                          >
+                            Your Account
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/user/orders"
+                            className="text-gray-700 hover:text-orange-600 hover:underline"
+                          >
+                            Your Orders
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/wishlist"
+                            className="text-gray-700 hover:text-orange-600 hover:underline"
+                          >
+                            Your Wish List
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/"
+                            className="text-gray-700 hover:text-orange-600 hover:underline"
+                          >
+                            Keep Shopping
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/recommendations"
+                            className="text-gray-700 hover:text-orange-600 hover:underline"
+                          >
+                            Your Recommendations
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/prime"
+                            className="text-gray-700 hover:text-orange-600 hover:underline"
+                          >
+                            Your Prime membership
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/prime-video"
+                            className="text-gray-700 hover:text-orange-600 hover:underline"
+                          >
+                            Your Prime Video
+                          </Link>
+                        </li>
+                        {/* Logout (Only for authenticated users) */}
+                        {isUserAuth && (
+                          <li className="mt-2 pt-2 border-t border-gray-200">
+                            <button
+                              onClick={logout}
+                              className="text-gray-700 hover:text-orange-600 hover:underline"
+                            >
+                              Log Out
+                            </button>
+                          </li>
+                        )}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="hidden md:block cursor-pointer hover:border hover:border-white px-2 py-1 rounded transition-colors">
-            <div className="flex flex-col text-xs leading-tight">
+            <Link to="/user/orders" className="flex flex-col text-xs leading-tight">
               <span className="text-gray-300">Returns</span>
               <span className="font-bold">& Orders</span>
-            </div>
+            </Link>
           </div>
 
           {/* Cart with badge */}
-          <div className="flex items-center cursor-pointer hover:border hover:border-white px-2 py-1 rounded transition-colors relative">
+          <Link
+            to="/cart"
+            className="flex items-center cursor-pointer hover:border hover:border-white px-2 py-1 rounded transition-colors relative"
+          >
             <div className="relative">
               <ShoppingCart size={28} />
               {cartCount > 0 && (
@@ -84,11 +295,9 @@ export const Navbar = ({ cartCount = 0 }) => {
               )}
             </div>
             <span className="font-bold ml-1 hidden md:inline">Cart</span>
-          </div>
+          </Link>
         </div>
       </div>
-
-      {/* Bottom bar - Search and Categories */}
 
       {/* Categories bar (desktop) */}
       <div className="hidden md:flex items-center px-4 py-2 space-x-4 text-sm bg-amazon-dark">
