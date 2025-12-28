@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { axiosInstance } from "../config/axiosInstance";
@@ -11,6 +11,7 @@ const Confirmation = () => {
   const [orderData, setOrderData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [orderId, setOrderId] = useState(null);
+  const hasOrderBeenCreated = useRef(false);
 
   // Format price with Indian Rupee symbol
   const formatPrice = (price) => {
@@ -22,6 +23,10 @@ const Confirmation = () => {
   };
 
   useEffect(() => {
+    if (hasOrderBeenCreated.current) {
+      return;
+    }
+
     const createOrder = async () => {
       // Check if cart is empty
       if (!cartItems || cartItems.length === 0) {
@@ -42,6 +47,7 @@ const Confirmation = () => {
 
       try {
         setIsLoading(true);
+        hasOrderBeenCreated.current = true;
 
         // Prepare order data
         const items = cartItems.map((item) => ({
@@ -103,7 +109,7 @@ const Confirmation = () => {
     };
 
     createOrder();
-  }, []); // Run only once on mount
+  }, []);
 
   const subtotal = orderData ? orderData.totalAmount : getTotalPrice();
   const totalItems = orderData
