@@ -57,14 +57,4 @@ export const router = createBrowserRouter([
     path: "/login",
     element: <Login />,
   },
-  // {
-  //   path: "/checkout",
-  //   element: <ProtectedRoute />,
-  //   children: [
-  //     {
-  //       path: "",
-  //       element: <Checkout />,
-  //     },
-  //   ],
-  // },
 ]);
