@@ -3,6 +3,7 @@ import AmazonLogoBL from "../assets/AmazonLogoBL.png";
 import { useForm } from "react-hook-form";
 import { toast, Zoom } from "react-toastify";
 import { axiosInstance } from "../config/axiosInstance";
+import GoogleSignIn from "../components/GoogleSignIn";
 
 const SignUp = () => {
   const {
@@ -227,7 +228,7 @@ const SignUp = () => {
           </div>
 
           {/* Google Login Button */}
-          <button
+          {/* <button
             onClick={handleGoogleLogin}
             className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 hover:bg-gray-50 text-gray-900 font-medium py-2 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 transition duration-200"
           >
@@ -254,7 +255,9 @@ const SignUp = () => {
               />
             </svg>
             Login with Google
-          </button>
+          </button> */}
+
+          <GoogleSignIn />
 
           {/* Already have account */}
           <div className="mt-6 pt-6 border-t border-gray-200">
