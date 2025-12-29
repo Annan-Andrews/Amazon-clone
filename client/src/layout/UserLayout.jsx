@@ -5,14 +5,17 @@ import Footer from "../components/Footer";
 import { ScrollToTop } from "../components/ScrollToTop";
 import { ToastContainer, Zoom } from "react-toastify";
 import { axiosInstance } from "../config/axiosInstance";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { saveUser, clearUser } from "../redux/userSlice";
 import { useEffect } from "react";
 
 export const UserLayout = () => {
-  const { isUserAuth, userData } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const location = useLocation();
+
+  const hideNavbarFooter = [ "/user/checkout" ];
+
+  const shouldShowNavbarFooter = !hideNavbarFooter.includes(location.pathname);
 
   const checkUser = async () => {
     try {
@@ -49,12 +52,12 @@ export const UserLayout = () => {
         theme="light"
         transition={Zoom}
       />
-      <Navbar />
+      {shouldShowNavbarFooter && <Navbar />}
       <ScrollToTop />
       <div className="grow pb-20">
         <Outlet />
       </div>
-      <Footer />
+      {shouldShowNavbarFooter && <Footer />}
     </div>
   );
 };

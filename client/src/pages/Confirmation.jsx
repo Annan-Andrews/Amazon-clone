@@ -102,7 +102,7 @@ const Confirmation = () => {
           }
         );
         // Redirect to checkout on error
-        navigate("/checkout");
+        navigate("/user/checkout");
       } finally {
         setIsLoading(false);
       }

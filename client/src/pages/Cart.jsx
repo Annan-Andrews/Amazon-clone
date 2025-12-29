@@ -29,9 +29,9 @@ const Cart = () => {
 
   const handleProceedToCheckout = () => {
     if (!isUserAuth) {
-      navigate("/login", { state: { from: "/checkout" } });
+      navigate("/login", { state: { from: "/user/checkout" } });
     } else {
-      navigate("/checkout");
+      navigate("/user/checkout");
     }
   };
 

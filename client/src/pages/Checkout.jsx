@@ -5,6 +5,7 @@ import AmazonLogo from "../assets/AmazonLogo.png";
 import { useCart } from "../context/CartContext";
 import { useSelector } from "react-redux";
 import useLogout from "../hooks/useLogout";
+import { toast, Zoom } from "react-toastify";
 
 const Checkout = () => {
   const { cartItems, getTotalPrice } = useCart();

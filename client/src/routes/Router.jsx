@@ -40,9 +40,13 @@ export const router = createBrowserRouter([
           {
             path: "confirmation",
             element: <Confirmation />,
-          }
+          },
+          {
+            path: "checkout",
+            element: <Checkout />,
+          },
         ],
-      }
+      },
     ],
   },
   {
@@ -53,14 +57,14 @@ export const router = createBrowserRouter([
     path: "/login",
     element: <Login />,
   },
-  {
-    path: "/checkout",
-    element: <ProtectedRoute />,
-    children: [
-      {
-        path: "",
-        element: <Checkout />,
-      },
-    ],
-  },
+  // {
+  //   path: "/checkout",
+  //   element: <ProtectedRoute />,
+  //   children: [
+  //     {
+  //       path: "",
+  //       element: <Checkout />,
+  //     },
+  //   ],
+  // },
 ]);

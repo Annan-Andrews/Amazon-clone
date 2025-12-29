@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import AmazonLogoBL from "../assets/AmazonLogoBL.png";
 import { useForm } from "react-hook-form";
 import { axiosInstance } from "../config/axiosInstance";
@@ -12,6 +12,8 @@ const Login = () => {
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
+
+  const location = useLocation()
 
   const onSubmit = async (data) => {
     try {
@@ -54,12 +56,6 @@ const Login = () => {
         transition: Zoom,
       });
     }
-  };
-
-  const handleGoogleLogin = () => {
-    // Google login logic here
-    console.log("Google login clicked");
-    alert("Google login functionality would be implemented here");
   };
 
   return (

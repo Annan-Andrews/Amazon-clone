@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import AmazonLogoBL from "../assets/AmazonLogoBL.png";
 import { useForm } from "react-hook-form";
 import { toast, Zoom } from "react-toastify";
@@ -14,6 +14,8 @@ const SignUp = () => {
   } = useForm();
   const navigate = useNavigate();
 
+  const location = useLocation()
+
   // Watch password to compare with confirmPassword
   const password = watch("password");
 
@@ -27,7 +29,6 @@ const SignUp = () => {
         data: requestData,
       });
 
-      
       if (response.status === 201) {
         toast.success("Account Created successfully!", {
           position: "top-center",
@@ -42,7 +43,7 @@ const SignUp = () => {
         });
 
         setTimeout(() => {
-          navigate("/");
+          navigate(location.state?.from || "/");
         }, 500);
       }
     } catch (error) {
@@ -59,12 +60,6 @@ const SignUp = () => {
         transition: Zoom,
       });
     }
-  };
-
-  const handleGoogleLogin = () => {
-    // Google login logic here
-    console.log("Google login clicked");
-    alert("Google login functionality would be implemented here");
   };
 
   return (
