@@ -1,14 +1,19 @@
 import { useEffect } from "react";
 import { axiosInstance } from "../config/axiosInstance";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const GoogleSignIn = () => {
+  const navigate = useNavigate();
+
+  const location = useLocation();
+
   const handleGoogleResponse = async (response) => {
     try {
       await axiosInstance.post("/user/auth/google", {
         credential: response.credential,
       });
 
-      window.location.href = "/";
+      navigate(location.state?.from || "/");
     } catch (err) {
       console.error("Google login failed:", err);
       alert("Google login failed");
