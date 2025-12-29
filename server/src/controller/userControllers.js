@@ -1,5 +1,6 @@
 const User = require("../models/userModel");
 const generateToken = require("../utils/token");
+const { OAuth2Client } = require("google-auth-library");
 
 const userSignup = async (req, res) => {
   try {
@@ -127,9 +128,51 @@ const checkUser = async (req, res, next) => {
   }
 };
 
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+const googleLogin = async (req, res) => {
+  try {
+    const { credential } = req.body;
+
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const { email, name } = ticket.getPayload();
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await User.create({
+        name,
+        email,
+        authProvider: "google",
+      });
+    }
+
+    const token = generateToken(user._id);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    return res.status(401).json({
+      success: false,
+      message: "Google authentication failed",
+    });
+  }
+};
+
 module.exports = {
   userSignup,
   userLogin,
   userLogout,
   checkUser,
+  googleLogin,
 };
